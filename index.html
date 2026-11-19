@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crep Developer Production</title>
+    <link rel="preconnect" href="https://play-lh.googleusercontent.com" crossorigin>
     <style>
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -142,11 +143,18 @@
             overflow: hidden;
             transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+            background: #222;
         }
         .app-card:hover .app-icon {
             transform: scale(1.08) rotate(-3deg);
         }
-        .app-icon svg { width: 100%; height: 100%; display: block; }
+        .app-icon svg,
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
 
         /* Текст */
         .app-info {
@@ -191,46 +199,133 @@
             box-shadow: 0 0 22px rgba(255, 255, 255, 0.35);
         }
 
-        /* === Картка розробника (акцентна) === */
+        /* === КАРТКА РОЗРОБНИКА (нова структура з банером + аватаркою) === */
         .developer-card {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            border-color: #4a4a8a;
+            animation: slideIn 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .developer-card::before { display: none; }
+        .developer-card:hover {
+            border-color: #7a7aca;
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.6),
+                        0 0 46px rgba(102, 126, 234, 0.28);
+        }
+
+        /* Банер */
+        .dev-banner {
+            width: 100%;
+            height: 165px;
+            overflow: hidden;
+            position: relative;
             background: linear-gradient(135deg, #2a2a5a 0%, #4a2a6a 50%, #2a4a5a 100%);
             background-size: 200% 200%;
-            border-color: #4a4a8a;
-            padding: 1.4rem 1.5rem;
-            animation: slideIn 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards,
-                       gradientShift 10s ease infinite;
+            animation: gradientShift 10s ease infinite;
         }
         @keyframes gradientShift {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
-        .developer-card .app-icon {
-            width: 58px;
-            height: 58px;
-            border-radius: 14px;
+        .dev-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            transition: transform 0.6s ease;
         }
-        .developer-card .app-title {
-            font-size: 1.15rem;
-            font-weight: 600;
+        .developer-card:hover .dev-banner img {
+            transform: scale(1.04);
         }
-        .developer-card .play-icon {
-            width: 42px;
-            height: 42px;
-        }
-        .developer-card:hover {
-            border-color: #7a7aca;
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6),
-                        0 0 42px rgba(102, 126, 234, 0.28);
+        /* Легке затемнення низу банеру для контрасту з аватаркою */
+        .dev-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 55%, rgba(0, 0, 0, 0.35) 100%);
+            pointer-events: none;
         }
 
-        /* Stagger анімації для карток */
+        /* Тіло картки з аватаркою, що накладається на банер */
+        .dev-body {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0 1.3rem 1.3rem;
+            margin-top: -40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .dev-avatar {
+            width: 78px;
+            height: 78px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            border: 3px solid #181818;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        /* Заглушка "C" на випадок, якщо аватарка не завантажиться */
+        .dev-avatar::before {
+            content: 'C';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.8rem;
+            z-index: 0;
+        }
+        .dev-avatar img {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .developer-card:hover .dev-avatar {
+            transform: scale(1.06);
+        }
+
+        .dev-info {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        }
+        .dev-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem;
+            letter-spacing: 0.3px;
+        }
+        .dev-desc {
+            color: #aaaaaa;
+            margin: 0;
+            font-size: 0.86rem;
+            line-height: 1.35;
+        }
+
+        .developer-card .play-icon {
+            width: 44px;
+            height: 44px;
+        }
+
+        /* Stagger анімації */
         .app-card:nth-child(1) { animation-delay: 0.05s; }
         .app-card:nth-child(2) { animation-delay: 0.15s; }
         .app-card:nth-child(3) { animation-delay: 0.25s; }
         .app-card:nth-child(4) { animation-delay: 0.35s; }
         .app-card:nth-child(5) { animation-delay: 0.45s; }
 
-        /* Плавний fade при зміні мови */
         .fade-out {
             opacity: 0.35;
             transition: opacity 0.15s ease;
@@ -267,16 +362,33 @@
             .play-icon { width: 34px; height: 34px; }
             .play-icon svg { width: 18px; height: 18px; }
 
-            .developer-card { padding: 1.15rem 1rem; }
-            .developer-card .app-icon { width: 52px; height: 52px; }
-            .developer-card .app-title { font-size: 1.05rem; }
+            /* Developer card на мобільному */
+            .dev-banner { height: 120px; }
+            .dev-body {
+                padding: 0 1rem 1rem;
+                margin-top: -32px;
+                gap: 0.8rem;
+            }
+            .dev-avatar {
+                width: 64px;
+                height: 64px;
+                border-width: 2.5px;
+            }
+            .dev-avatar::before { font-size: 1.45rem; }
+            .dev-name { font-size: 1.05rem; }
+            .dev-desc { font-size: 0.78rem; line-height: 1.3; }
             .developer-card .play-icon { width: 38px; height: 38px; }
 
             .lang-switcher { top: 12px; right: 12px; }
             .lang-btn { padding: 7px 11px; font-size: 0.82rem; }
         }
 
-        /* Зменшення анімацій для тих, хто полюбляє зменшений рух */
+        /* Дуже вузькі екрани */
+        @media (max-width: 380px) {
+            .dev-desc { font-size: 0.74rem; }
+            .dev-avatar { width: 58px; height: 58px; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -287,7 +399,6 @@
 </head>
 <body>
 
-<!-- Мовний перемикач -->
 <div class="lang-switcher" role="group" aria-label="Language selector">
     <button class="lang-btn" data-lang="en" type="button">
         <span class="lang-flag">🇬🇧</span> EN
@@ -303,56 +414,49 @@
 
     <div class="app-list">
 
-        <!-- === Сторінка розробника (акцентна картка) === -->
+        <!-- === КАРТКА РОЗРОБНИКА === -->
         <a href="https://play.google.com/store/apps/dev?id=6826123419942290062"
            data-play-url="https://play.google.com/store/apps/dev?id=6826123419942290062"
-           class="app-card developer-card" target="_blank" rel="noopener">
-            <div class="app-icon">
-                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="devGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#667eea"/>
-                            <stop offset="100%" stop-color="#f093fb"/>
-                        </linearGradient>
-                    </defs>
-                    <rect width="48" height="48" rx="12" fill="url(#devGrad)"/>
-                    <circle cx="24" cy="18" r="6" fill="#fff"/>
-                    <path d="M12 36c0-6.6 5.4-12 12-12s12 5.4 12 12v2H12v-2z" fill="#fff"/>
-                </svg>
+           class="app-card developer-card" target="_blank" rel="noopener"
+           aria-label="Crep — developer page on Google Play">
+
+            <div class="dev-banner">
+                <img src="https://play-lh.googleusercontent.com/1h0ULZ0FmNfml5x_JnFeiWJ3o2YwItRnonr0gYbRG6P-zF5kOMBSx_TqoWhFf2UvIA=w800-h450-rw"
+                     alt=""
+                     loading="lazy" decoding="async">
             </div>
-            <div class="app-info">
-                <h2 class="app-title" data-i18n="devTitle">Developer Page</h2>
-                <p class="app-desc" data-i18n="devDesc">All apps on Google Play</p>
-            </div>
-            <div class="play-icon">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path fill="#EA4335" d="M3 20.5V3.5C3 2.91 3.34 2.39 3.84 2.15L13.69 12L3.84 21.85C3.34 21.6 3 21.09 3 20.5Z"/>
-                    <path fill="#FBBC04" d="M16.81 15.12L6.05 21.34L14.54 12.85L16.81 15.12Z"/>
-                    <path fill="#34A853" d="M20.16 10.81C20.99 11.3 21 12.68 20.16 13.19L16.81 15.12L14.54 12.85L16.81 10.59L20.16 10.81Z"/>
-                    <path fill="#4285F4" d="M6.05 2.66L16.81 8.88L14.54 11.15L6.05 2.66Z"/>
-                </svg>
+
+            <div class="dev-body">
+                <div class="dev-avatar">
+                    <img src="https://play-lh.googleusercontent.com/MsE-xxf4x4SF1Rj03GMlHGCFplNVhIHgBTBftrRgjO1ayoA094X-4Q1VQmQRroAy-g=s188-rw"
+                         alt="Crep avatar"
+                         loading="lazy" decoding="async">
+                </div>
+                <div class="dev-info">
+                    <h2 class="dev-name">Crep</h2>
+                    <p class="dev-desc" data-i18n="devDesc">Practical software and tools designed to make your daily routine simpler.</p>
+                </div>
+                <div class="play-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path fill="#EA4335" d="M3 20.5V3.5C3 2.91 3.34 2.39 3.84 2.15L13.69 12L3.84 21.85C3.34 21.6 3 21.09 3 20.5Z"/>
+                        <path fill="#FBBC04" d="M16.81 15.12L6.05 21.34L14.54 12.85L16.81 15.12Z"/>
+                        <path fill="#34A853" d="M20.16 10.81C20.99 11.3 21 12.68 20.16 13.19L16.81 15.12L14.54 12.85L16.81 10.59L20.16 10.81Z"/>
+                        <path fill="#4285F4" d="M6.05 2.66L16.81 8.88L14.54 11.15L6.05 2.66Z"/>
+                    </svg>
+                </div>
             </div>
         </a>
 
         <!-- === LiveTranslate === -->
-        <!-- Щоб використати справжню іконку, замініть <svg>...</svg> на:
-             <img src="https://play-lh.googleusercontent.com/...=w240-h480-rw" alt="LiveTranslate" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"> -->
         <a href="https://play.google.com/store/apps/details?id=com.crep.livetranslate"
            data-play-url="https://play.google.com/store/apps/details?id=com.crep.livetranslate"
            class="app-card" target="_blank" rel="noopener">
             <div class="app-icon">
-                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="ltGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#667eea"/>
-                            <stop offset="100%" stop-color="#764ba2"/>
-                        </linearGradient>
-                    </defs>
-                    <rect width="48" height="48" rx="12" fill="url(#ltGrad)"/>
-                    <g fill="#fff" transform="translate(8, 8) scale(1.33)">
-                        <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-                    </g>
-                </svg>
+                <img src="https://play-lh.googleusercontent.com/nb6SMAHLlURcvmxNLo_CwwYdAV1Ol2xwIlyAUYpGFAJ5Rot0rAb04SAU9eCq0Ac0KGfI9mBFwwKWZi_hf50S-A=w240-h480-rw"
+                     alt="LiveTranslate icon"
+                     loading="lazy" decoding="async"
+                     class="app-icon-img"
+                     data-letter="L" data-color1="#667eea" data-color2="#764ba2">
             </div>
             <div class="app-info">
                 <h2 class="app-title">LiveTranslate</h2>
@@ -373,18 +477,11 @@
            data-play-url="https://play.google.com/store/apps/details?id=com.crep.openanyfile"
            class="app-card" target="_blank" rel="noopener">
             <div class="app-icon">
-                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="ofGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#f093fb"/>
-                            <stop offset="100%" stop-color="#f5576c"/>
-                        </linearGradient>
-                    </defs>
-                    <rect width="48" height="48" rx="12" fill="url(#ofGrad)"/>
-                    <g fill="#fff" transform="translate(8, 8) scale(1.33)">
-                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                    </g>
-                </svg>
+                <img src="https://play-lh.googleusercontent.com/NrHAHw8h_WquurV9mDc4VOsNTX-yNv3jHUZtpJz5vadalxyXUErwTcpppFE49cin3cPcxIVpJqlvxeBoZk5wIj4=w240-h480-rw"
+                     alt="OpenAny File icon"
+                     loading="lazy" decoding="async"
+                     class="app-icon-img"
+                     data-letter="O" data-color1="#f093fb" data-color2="#f5576c">
             </div>
             <div class="app-info">
                 <h2 class="app-title">OpenAny File</h2>
@@ -405,19 +502,11 @@
            data-play-url="https://play.google.com/store/apps/details?id=com.crep.hvylynamovchannya"
            class="app-card" target="_blank" rel="noopener">
             <div class="app-icon">
-                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="hmGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#0057B7"/>
-                            <stop offset="100%" stop-color="#003d8f"/>
-                        </linearGradient>
-                    </defs>
-                    <rect width="48" height="48" rx="12" fill="url(#hmGrad)"/>
-                    <!-- Свічка -->
-                    <ellipse cx="24" cy="17" rx="3.5" ry="5" fill="#FFD700"/>
-                    <ellipse cx="24" cy="18" rx="1.5" ry="2.5" fill="#FFF8B0"/>
-                    <rect x="20" y="22" width="8" height="18" rx="1.5" fill="#ffffff"/>
-                </svg>
+                <img src="https://play-lh.googleusercontent.com/L9vS8OC2RuynmzLPC-kZnKhlbysUTbiPhPAuWEZdQXmeR9_WwW78i2q1gMtHvmCfsQrNCDShZTUWa3vwdpXHWBA=w240-h480-rw"
+                     alt="Хвилина Мовчання icon"
+                     loading="lazy" decoding="async"
+                     class="app-icon-img"
+                     data-letter="Х" data-color1="#0057B7" data-color2="#003d8f">
             </div>
             <div class="app-info">
                 <h2 class="app-title">Хвилина Мовчання</h2>
@@ -438,18 +527,11 @@
            data-play-url="https://play.google.com/store/apps/details?id=com.crep.cleanslate"
            class="app-card" target="_blank" rel="noopener">
             <div class="app-icon">
-                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="csGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#00e6a5"/>
-                            <stop offset="100%" stop-color="#00b4d8"/>
-                        </linearGradient>
-                    </defs>
-                    <rect width="48" height="48" rx="12" fill="url(#csGrad)"/>
-                    <g fill="#fff" transform="translate(8, 8) scale(1.33)">
-                        <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/>
-                    </g>
-                </svg>
+                <img src="https://play-lh.googleusercontent.com/INaBsJemgcXjlTfjZDwTkYCQS-QcLawPM_mnZLm_MYLCquFNQDW-reV_UpvNSikTK8hMuCUlbv7i4eYJD-HAMw=w240-h480-rw"
+                     alt="CleanSlate icon"
+                     loading="lazy" decoding="async"
+                     class="app-icon-img"
+                     data-letter="C" data-color1="#00e6a5" data-color2="#00b4d8">
             </div>
             <div class="app-info">
                 <h2 class="app-title">CleanSlate</h2>
@@ -473,11 +555,11 @@
 </div>
 
 <script>
+    /* === i18n === */
     const translations = {
         en: {
             subtitle: "My applications on Google Play",
-            devTitle: "Developer Page",
-            devDesc: "All apps on Google Play",
+            devDesc: "Practical software and tools designed to make your daily routine simpler.",
             ltDesc: "Real-time screen translator",
             ofDesc: "Multi-reader for many file formats",
             hmDesc: "National minute of silence",
@@ -485,8 +567,7 @@
         },
         uk: {
             subtitle: "Мої додатки в Google Play",
-            devTitle: "Сторінка розробника",
-            devDesc: "Усі додатки в Google Play",
+            devDesc: "Практичне програмне забезпечення та інструменти, створені для спрощення вашої повсякденності.",
             ltDesc: "Перекладач екрану в реальному часі",
             ofDesc: "Мульти-читач багатьох форматів файлів",
             hmDesc: "Національна хвилина мовчання",
@@ -514,7 +595,6 @@
         document.documentElement.lang = lang;
         try { localStorage.setItem('site-lang', lang); } catch (e) {}
 
-        // Оновлюємо посилання Play Store з параметром hl
         document.querySelectorAll('[data-play-url]').forEach(el => {
             const base = el.dataset.playUrl;
             const sep = base.includes('?') ? '&' : '?';
@@ -524,17 +604,41 @@
 
     function setLanguage(lang) {
         if (!translations[lang]) lang = 'en';
-
         document.querySelectorAll('[data-i18n]').forEach(el => el.classList.add('fade-out'));
-
         setTimeout(() => {
             applyTranslations(lang);
             document.querySelectorAll('[data-i18n]').forEach(el => el.classList.remove('fade-out'));
         }, 150);
     }
 
-    // Ініціалізація: запам'ятована мова → мова браузера → англійська
+    /* === Fallback для іконок додатків === */
+    function attachIconFallbacks() {
+        document.querySelectorAll('img.app-icon-img').forEach(img => {
+            img.addEventListener('error', function handler() {
+                img.removeEventListener('error', handler);
+                const letter = img.dataset.letter || '?';
+                const c1 = img.dataset.color1 || '#667eea';
+                const c2 = img.dataset.color2 || '#764ba2';
+                const svg =
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">' +
+                        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+                            '<stop offset="0%" stop-color="' + c1 + '"/>' +
+                            '<stop offset="100%" stop-color="' + c2 + '"/>' +
+                        '</linearGradient></defs>' +
+                        '<rect width="48" height="48" rx="12" fill="url(#g)"/>' +
+                        '<text x="24" y="32" font-family="Arial,Helvetica,sans-serif" ' +
+                            'font-size="22" font-weight="700" fill="#fff" ' +
+                            'text-anchor="middle">' + letter + '</text>' +
+                    '</svg>';
+                img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            });
+        });
+    }
+
+    /* === Ініціалізація === */
     (function init() {
+        attachIconFallbacks();
+
         let lang;
         try { lang = localStorage.getItem('site-lang'); } catch (e) {}
         if (!lang) {
@@ -545,7 +649,6 @@
         document.getElementById('year').textContent = new Date().getFullYear();
     })();
 
-    // Обробники кнопок
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.dataset.lang !== currentLang) {
